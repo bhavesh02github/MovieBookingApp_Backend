@@ -6,15 +6,18 @@ const cors = require('cors');
 const PORT = 8000;
 const cookieParser = require('cookie-parser');
 
+const authRoutes = require('./Routes/Auth');
+const adminRoutes = require('./Routes/Admin');
+const movieRoutes = require('./Routes/Movie');
+const imageUploadRoutes = require('./Routes/imageUploadRoutes');
+
 
 require('dotenv').config();
 require('./db')
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
 
-// Configure CORS with credentials
+app.use(bodyParser.json());
+const allowedOrigins = ['http://localhost:3000','http://localhost:3001']; // Add more origins as needed
 app.use(
     cors({
         origin: function (origin, callback) {
@@ -29,11 +32,15 @@ app.use(
 );
 app.use(cookieParser());
 
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
+app.use('/movie', movieRoutes);
+app.use('/image', imageUploadRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'The API is working' });
 });
 
-
-app.use(bodyParser.json());
-const allowedOrigins = ['http://localhost:3000']; // Add more origins as needed
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
